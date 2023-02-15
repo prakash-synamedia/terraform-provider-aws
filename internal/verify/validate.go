@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-var arnAccountIDRegexp = regexp.MustCompile(`^(aws|aws-managed|third-party|\d{12})$`)
+var accountIDRegexp = regexp.MustCompile(`^(aws|aws-managed|third-party|\d{12})$`)
 var partitionRegexp = regexp.MustCompile(`^aws(-[a-z]+)*$`)
 var regionRegexp = regexp.MustCompile(`^[a-z]{2}(-[a-z]+)+-\d$`)
 
@@ -308,7 +308,7 @@ func ValidateOnceAWeekWindowFormat(value string) error {
 	validTimeFormatConsolidated := "^(" + validTimeFormat + "-" + validTimeFormat + "|)$"
 
 	val := strings.ToLower(value)
-	if !regexp.MustCompile(validTimeFormatConsolidated).MatchString(value) {
+	if !regexp.MustCompile(validTimeFormatConsolidated).MatchString(val) {
 		return fmt.Errorf("(%s) must satisfy the format of \"ddd:hh24:mi-ddd:hh24:mi\"", val)
 	}
 
@@ -381,7 +381,6 @@ func ValidateUTCTimestamp(value string) error {
 	}
 
 	return nil
-
 }
 
 // ValidUTCTimestamp validates a string in UTC Format required by APIs including:
