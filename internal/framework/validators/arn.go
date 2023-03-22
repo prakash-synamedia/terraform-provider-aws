@@ -3,9 +3,9 @@ package validators
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-provider-aws/internal/verify"
 )
 
 type arnValidator struct{}
@@ -23,14 +23,12 @@ func (validator arnValidator) ValidateString(ctx context.Context, request valida
 		return
 	}
 
-	if errs := verify.ValidateARN(request.ConfigValue.ValueString()); errs != nil {
-		for _, v := range errs {
-			response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
-				request.Path,
-				validator.Description(ctx),
-				v.Error(),
-			))
-		}
+	if !arn.IsARN(request.ConfigValue.ValueString()) {
+		response.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(
+			request.Path,
+			validator.Description(ctx),
+			"value must be a valid ARN",
+		))
 		return
 	}
 }
